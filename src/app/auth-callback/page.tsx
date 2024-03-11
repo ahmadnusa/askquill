@@ -1,21 +1,21 @@
 'use client'
-import { LoginLink } from '@kinde-oss/kinde-auth-nextjs/dist/types/components'
 import { Loader2 } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
 
 import { trpc } from '@/trpc/client'
 
 const Page = () => {
   const { push } = useRouter()
-  const searchParams = useSearchParams()
-  const origin = searchParams.get('origin')
+  const { get } = useSearchParams()
+  const origin = get('origin')
 
-  const { isSuccess, error, isError } = trpc.authCallback.useQuery()
+  const { data } = trpc.authCallback.useQuery()
 
-  if (isSuccess) push(origin ? `/${origin}` : '/dashboard')
-  if (isError)
-    error?.data?.code === 'UNAUTHORIZED' &&
-      push('/api/auth/login?post_login_redirect_url=/dashboard')
+  useEffect(() => {
+    if (data?.success) push(origin ? `/${origin}` : '/dashboard')
+    else push(`/api/auth/login?post_login_redirect_url=${origin ? `/${origin}` : '/dashboard'}`)
+  }, [data?.success, origin, push])
 
   return (
     <div className="w-full mt-24 flex justify-center">
