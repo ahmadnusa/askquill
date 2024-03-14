@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Dropzone from 'react-dropzone'
 
+import { useUploadThing } from '@/lib/uploadThing'
 import { trpc } from '@/trpc/client'
 
 import { Progress } from './ui/progress'
@@ -17,7 +18,7 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed?: boolean }) => {
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const { toast } = useToast()
 
-  // const { startUpload } = useUploadThing(isSubscribed ? 'proPlanUploader' : 'freePlanUploader')
+  const { startUpload } = useUploadThing('pdfUploader')
 
   const { mutate: startPolling } = trpc.getFile.useMutation({
     onSuccess: file => {
@@ -52,27 +53,27 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed?: boolean }) => {
         const progressInterval = startSimulatedProgress()
 
         // handle file uploading
-        // const res = await startUpload(acceptedFile)
+        const res = await startUpload(acceptedFile)
 
-        // if (!res) {
-        //   return toast({
-        //     title: 'Something went wrong',
-        //     description: 'Please try again later',
-        //     variant: 'destructive',
-        //   })
-        // }
+        if (!res) {
+          return toast({
+            title: 'Something went wrong',
+            description: 'Please try again later',
+            variant: 'destructive',
+          })
+        }
 
-        // const [fileResponse] = res
+        const [fileResponse] = res
 
-        // const key = fileResponse?.key
+        const key = fileResponse?.key
 
-        // if (!key) {
-        //   return toast({
-        //     title: 'Something went wrong',
-        //     description: 'Please try again later',
-        //     variant: 'destructive',
-        //   })
-        // }
+        if (!key) {
+          return toast({
+            title: 'Something went wrong',
+            description: 'Please try again later',
+            variant: 'destructive',
+          })
+        }
 
         clearInterval(progressInterval)
         setUploadProgress(100)

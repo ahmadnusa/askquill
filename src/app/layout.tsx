@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
 import Navbar from '@/components/Navbar'
+import { Toaster } from '@/components/ui/toaster'
 import { cn } from '@/lib/utils'
 
 import Providers from './Providers'
@@ -24,7 +25,7 @@ export default function RootLayout({
     <html lang="en" className="light">
       <Providers>
         <body className={cn('min-h-screen font-sans antialiased grainy', inter.className)}>
-          {/* <Toaster /> */}
+          <Toaster />
           <Navbar />
           {children}
         </body>
