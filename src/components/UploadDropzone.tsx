@@ -12,7 +12,7 @@ import { Progress } from './ui/progress'
 import { useToast } from './ui/use-toast'
 
 const UploadDropzone = ({ isSubscribed }: { isSubscribed?: boolean }) => {
-  const router = useRouter()
+  const { push } = useRouter()
 
   const [isUploading, setIsUploading] = useState<boolean>(false)
   const [uploadProgress, setUploadProgress] = useState<number>(0)
@@ -22,7 +22,7 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed?: boolean }) => {
 
   const { mutate: startPolling } = trpc.getFile.useMutation({
     onSuccess: file => {
-      router.push(`/dashboard/${file.id}`)
+      push(`/dashboard/${file.id}`)
     },
     retry: true,
     retryDelay: 500,
@@ -39,7 +39,7 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed?: boolean }) => {
         }
         return prevProgress + 5
       })
-    }, 500)
+    }, 100)
 
     return interval
   }
@@ -78,7 +78,7 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed?: boolean }) => {
         clearInterval(progressInterval)
         setUploadProgress(100)
 
-        // startPolling({ key })
+        startPolling({ key })
       }}
     >
       {({ getRootProps, getInputProps, acceptedFiles }) => (

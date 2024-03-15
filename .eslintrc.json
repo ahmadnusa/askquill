@@ -1,5 +1,5 @@
 {
-  "ignorePatterns": ["src/components/ui/*.tsx"],
+  "ignorePatterns": ["src/components/ui"],
   "extends": ["next/core-web-vitals", "plugin:import/recommended"],
   "plugins": ["simple-import-sort"],
   "rules": {
